@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  SSRFS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - "ec2.amazonaws.com"
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: SSRFS3Policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:ListBucket
+            Resource:
+            - !Sub
+              - 'arn:aws:s3:::${SSRFS3Bucket}'
+              - { SSRFS3Bucket: !Ref 'SSRFS3Bucket' }
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            Resource:
+            - !Sub
+              - 'arn:aws:s3:::${SSRFS3Bucket}/*'
+              - { SSRFS3Bucket: !Ref 'SSRFS3Bucket' }
+  SSRFInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - Ref: SSRFS3Role
+  SSRFS3SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group that allows HTTP traffic
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        ToPort: '80'
+  SSRFInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-020fe4e0416376632 # LAMP AMI in N.Virginia
+      Tags:
+        - Key: Name
+          Value: My SSRF EC2 Instance
+      UserData: !Base64 |
+        #!/bin/bash -x
+        mv /home/bitnami/htdocs/index.html /home/bitnami/htdocs/index.html.bak
+        wget https://raw.githubusercontent.com/osirislab/Giraffe/master/htdocs/ssrf.php -O /home/bitnami/htdocs/index.php
+      IamInstanceProfile:
+        Ref: SSRFInstanceProfile
+      SecurityGroupIds:
+        - Ref: SSRFS3SG
+  SSRFS3Bucket:
+    Type: AWS::S3::Bucket
+Outputs:
+  BucketName:
+    Value: !Ref 'SSRFS3Bucket'
+    Description: Name of the Amazon S3 bucket
+  SSRFWebURL:
+    Value: !Join [ "", [ "http://", !GetAtt SSRFInstance.PublicIp ] ]
+    Description: URL of the vulnerable web server
