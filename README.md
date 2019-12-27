@@ -71,7 +71,7 @@ export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCID
 	}]
   }
   ````
-- Call the policy IMDSv2InlinePolicy, press `Review policy` and then `Create policy`.
+- Call the policy `IMDSv2InlinePolicy`, press `Review policy` and then `Create policy`.
 - Try to run the `list-objects` or `get-object` from the "hacked" shell again. What happens?
 
 ### Cleanup
