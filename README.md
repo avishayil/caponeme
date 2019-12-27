@@ -51,6 +51,11 @@ export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCID
   ````
 - Now switch to the "hacked" shell and try to run the vunlerable web application. What happens?
 
+- Roll back by running the following command:
+  ````
+  aws ec2 modify-instance-metadata-options --instance-id <INSTANCE-ID> --http-endpoint enabled --http-token optional
+  ````
+
 #### Mitigation #2 - Limit Role Access Credentials to Instance Metadata Service V2
 
 - Go to the IAM role attached to the EC2 Instance, by locating the instance, then pressing on the entity written on `IAM role`. Press on `Attach inline policy`, then apply the following policy:
