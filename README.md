@@ -8,7 +8,7 @@
 
 ## Getting Started
 
-- Make sure you have `awscli` installed on your terminal.
+- Make sure you have the latest version of `awscli` installed on your terminal.
 - Make sure you run this from the `us-east-1` (North Virginia) region on the AWS Console.
 
 ### Deployment
@@ -39,6 +39,40 @@ export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCID
 
 - Now, you can see all the objects inside this bucket with `aws s3api list-objects --bucket <YOUR-S3-BUCKET>`
 - Then, you can download the bucket objects using `aws s3api get-object --bucket <YOUR-S3-BUCKET> --key <YOUR-S3-OBJECT> demo.txt`
+
+### Mitigation
+
+#### Mitigation #1 - Enable Security Token on Metadata Service
+
+- From a privileged shell session on your AWS account (not the hacked session), type the following command to enable security token on metadata server of the instance:
+
+  ````
+  aws ec2 modify-instance-metadata-options --instance-id <INSTANCE-ID> --http-endpoint enabled --http-token required
+  ````
+- Now switch to the "hacked" shell and try to run the vunlerable web application. What happens?
+
+#### Mitigation #2 - Limit Role Access Credentials to Instance Metadata Service V2
+
+- Go to the IAM role attached to the EC2 Instance, by locating the instance, then pressing on the entity written on `IAM role`. Press on `Attach inline policy`, then apply the following policy:
+
+  ````
+  {
+	"Version": "2012-10-17",
+	"Statement": [{
+		"Sid": "RunInstanceWithImdsV2Only",
+		"Effect": "Allow",
+		"Action": "ec2:RunInstances",
+		"Resource": "*",
+		"Condition": {
+			"StringEquals": {
+				"ec2:MetadataHttpTokens": "required"
+			}
+		}
+	}]
+  }
+  ````
+- Call the policy IMDSv2InlinePolicy, press `Review policy` and then `Create policy`.
+- Try to run the `list-objects` or `get-object` from the "hacked" shell again. What happens?
 
 ### Cleanup
 
