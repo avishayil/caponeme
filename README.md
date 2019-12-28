@@ -4,7 +4,7 @@
 
 ## What is Capital One Breach?
 
-[Click here to find out](https://lmgtfy.com/?q=capital+one+breach+2019)
+[Click here to find out](https://www.capitalone.com/facts2019/)
 
 ## Getting Started
 
