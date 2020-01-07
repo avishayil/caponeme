@@ -44,7 +44,7 @@ Resources:
       GroupDescription: Security Group that allows HTTP traffic
       SecurityGroupIngress:
       - IpProtocol: tcp
-        CidrIp: 0.0.0.0/0
+        CidrIp: !Sub '${IpAddress}/32'
         FromPort: '80'
         ToPort: '80'
   SSRFInstance:
@@ -65,6 +65,20 @@ Resources:
         - Ref: SSRFS3SG
   SSRFS3Bucket:
     Type: AWS::S3::Bucket
+Parameters:
+  IpAddress:
+    Description: Your computer ip address (Not CIDR notation). You can usually find it by searching "what's my ip" on the internet.
+    Type: String
+Metadata:
+  AWS::CloudFormation::Interface: 
+    ParameterGroups: 
+      - Label: 
+          default: "General Configuration"
+        Parameters: 
+          - IpAddress
+    ParameterLabels: 
+      IpAddress: 
+        default: "IP Address"
 Outputs:
   BucketName:
     Value: !Ref 'SSRFS3Bucket'
