@@ -64,9 +64,9 @@ export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCID
   {
 	"Version": "2012-10-17",
 	"Statement": [{
-		"Sid": "RunInstanceWithImdsV2Only",
+		"Sid": "GetS3BucketContentsWithImdsV2Only",
 		"Effect": "Allow",
-		"Action": "ec2:RunInstances",
+		"Action": "s3:*",
 		"Resource": "*",
 		"Condition": {
 			"StringEquals": {
