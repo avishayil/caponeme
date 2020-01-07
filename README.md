@@ -4,7 +4,7 @@
 
 ## Disclaimer
 
-This CloudFormation template is **NOT** intended for a production account / environment. It is an example for a vulnerable web application that allows AWS credentials being compormised. Please use this with **CATION**.
+This CloudFormation template is **NOT** intended for deployment in a production account / environment. It is an example for a vulnerable web application that allows AWS credentials being compormised. Please use this with **CAUTION** and consider using new AWS account for this kind of experiment.
 
 ## What is Capital One Breach?
 
