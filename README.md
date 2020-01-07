@@ -62,18 +62,20 @@ export AWS_SESSION_TOKEN="IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCID
 
   ````
   {
-	"Version": "2012-10-17",
-	"Statement": [{
-		"Sid": "GetS3BucketContentsWithImdsV2Only",
-		"Effect": "Allow",
-		"Action": "s3:*",
-		"Resource": "*",
-		"Condition": {
-			"StringEquals": {
-				"ec2:MetadataHttpTokens": "required"
-			}
-		}
-	}]
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Sid": "RequireImdsV2",
+              "Effect": "Deny",
+              "Action": "*",
+              "Resource": "*",
+              "Condition": {
+                  "StringNotEquals": {
+                      "ec2:MetadataHttpTokens": "required"
+                  }
+              }
+          }
+      ]
   }
   ````
 - Call the policy `IMDSv2InlinePolicy`, press `Review policy` and then `Create policy`.
