@@ -2,6 +2,10 @@
 
 ***caponeme*** is a vulnerable cloud environment that meant to mock Capital One Breach for educational purposes
 
+## Disclaimer
+
+This CloudFormation template is **NOT** intended for a production account / environment. It is an example for a vulnerable web application that allows AWS credentials being compormised. Please use this with **CATION**.
+
 ## What is Capital One Breach?
 
 [Click here to find out](https://www.capitalone.com/facts2019/)
