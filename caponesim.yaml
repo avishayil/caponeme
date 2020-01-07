@@ -69,6 +69,8 @@ Parameters:
   IpAddress:
     Description: Your computer ip address (Not CIDR notation). You can usually find it by searching "what's my ip" on the internet.
     Type: String
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})
+    ConstraintDescription: must be a valid IP address of the form x.x.x.x.
 Metadata:
   AWS::CloudFormation::Interface: 
     ParameterGroups: 
