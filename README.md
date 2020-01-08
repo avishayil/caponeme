@@ -65,7 +65,7 @@ This CloudFormation template is **NOT** intended for deployment in a production 
   ````
   aws ec2 modify-instance-metadata-options --instance-id <INSTANCE-ID> --http-endpoint enabled --http-token required
   ````
-- Now go to your browser and try to supply the inputs mentioned above to the vunlerable web application. What happens?
+- Using your web browser, switch to the vulnerable web application and repeat [these steps](#discovering-the-contents-of-the-s3-bucket). What happens?
 
 - Roll back by running the following command:
   ````
