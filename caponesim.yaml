@@ -1,3 +1,5 @@
+---
+
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
   SSRFS3Role:
@@ -6,52 +8,52 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - "ec2.amazonaws.com"
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: SSRFS3Policy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - s3:ListBucket
-            Resource:
-            - !Sub
-              - 'arn:aws:s3:::${SSRFS3Bucket}'
-              - { SSRFS3Bucket: !Ref 'SSRFS3Bucket' }
-          - Effect: Allow
-            Action:
-            - s3:GetObject
-            Resource:
-            - !Sub
-              - 'arn:aws:s3:::${SSRFS3Bucket}/*'
-              - { SSRFS3Bucket: !Ref 'SSRFS3Bucket' }
+        - PolicyName: SSRFS3Policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  - !Sub
+                    - 'arn:aws:s3:::${SSRFS3Bucket}'
+                    - {SSRFS3Bucket: !Ref 'SSRFS3Bucket'}
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub
+                    - 'arn:aws:s3:::${SSRFS3Bucket}/*'
+                    - {SSRFS3Bucket: !Ref 'SSRFS3Bucket'}
   SSRFInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles:
-      - Ref: SSRFS3Role
+        - Ref: SSRFS3Role
   SSRFS3SG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security Group that allows HTTP traffic
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        CidrIp: !Sub '${IpAddress}/32'
-        FromPort: '80'
-        ToPort: '80'
+        - IpProtocol: tcp
+          CidrIp: !Sub '${IpAddress}/32'
+          FromPort: 80
+          ToPort: 80
   SSRFInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-020fe4e0416376632 # LAMP AMI in N.Virginia
+      ImageId: ami-020fe4e0416376632  # LAMP AMI in N.Virginia
       Tags:
         - Key: Name
           Value: My SSRF EC2 Instance
@@ -72,19 +74,19 @@ Parameters:
     AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})
     ConstraintDescription: must be a valid IP address of the form x.x.x.x.
 Metadata:
-  AWS::CloudFormation::Interface: 
-    ParameterGroups: 
-      - Label: 
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
           default: "General Configuration"
-        Parameters: 
+        Parameters:
           - IpAddress
-    ParameterLabels: 
-      IpAddress: 
+    ParameterLabels:
+      IpAddress:
         default: "IP Address"
 Outputs:
   BucketName:
     Value: !Ref 'SSRFS3Bucket'
     Description: Name of the Amazon S3 bucket
   SSRFWebURL:
-    Value: !Join [ "", [ "http://", !GetAtt SSRFInstance.PublicIp ] ]
+    Value: !Join ["", ["http://", !GetAtt SSRFInstance.PublicIp]]
     Description: URL of the vulnerable web server
