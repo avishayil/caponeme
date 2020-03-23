@@ -2,6 +2,8 @@
 
 ***caponeme*** is a vulnerable cloud environment that meant to mock Capital One Breach for educational purposes
 
+[![Build Status](https://travis-ci.com/avishayil/caponeme.svg?branch=master)](https://travis-ci.org/avishayil/caponeme)
+
 ## Disclaimer
 
 This CloudFormation template is **NOT** intended for deployment in a production account / environment. It is an example for a vulnerable web application that allows AWS credentials being compromised. Please use this with **CAUTION** and consider using new AWS account for this kind of experiment.
