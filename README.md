@@ -108,16 +108,18 @@ This CloudFormation template is **NOT** intended for deployment in a production 
 - Empty the S3 Bucket
 - Delete the CloudFormation stack (won't work if you haven't cleared the bucket from objects)
 
-## Todos
+## Todo
 
  - You tell me?
 
 ## Credits
 
-We're using some tech to make this work:
+- We're using some tech to make this work:
 
-* [Giraffe](https://github.com/osirislab/Giraffe) - Vulnerable web application
-* [Bitnami LAMP Stack](https://bitnami.com/stack/lamp) - AMI using to quickly provision the EC2 Instance
+  * [Giraffe](https://github.com/osirislab/Giraffe) - Vulnerable web application
+  * [Bitnami LAMP Stack](https://bitnami.com/stack/lamp) - AMI using to quickly provision the EC2 Instance
+
+- Thanks to @Bouix for the multi-region support contribution.
 
 License
 ----
