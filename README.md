@@ -2,7 +2,7 @@
 
 ***caponeme*** is a vulnerable cloud environment that meant to mock Capital One Breach for educational purposes
 
-[![Build Status](https://travis-ci.com/avishayil/caponeme.svg?branch=master)](https://travis-ci.org/avishayil/caponeme)
+[![Build Status](https://travis-ci.com/avishayil/caponeme.svg?branch=master)](https://travis-ci.com/avishayil/caponeme)
 
 ## Disclaimer
 
