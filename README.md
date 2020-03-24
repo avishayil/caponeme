@@ -15,7 +15,7 @@ This CloudFormation template is **NOT** intended for deployment in a production 
 ## Getting Started
 
 - Make sure you have the latest version of `awscli` installed on your terminal.
-- Make sure you run this from the `us-east-1` (North Virginia) region on the AWS Console.
+- This template can run on any region, assuming that the LAMP AMI's are correct.
 - To get access to the Bitnami LAMP Stack AMI, visit https://aws.amazon.com/marketplace/pp/B072JNJZ5C/, click on "Continue to Subscribe" and then click on "Accept Terms".
 
 ### Deployment
