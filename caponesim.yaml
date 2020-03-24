@@ -53,7 +53,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-020fe4e0416376632  # LAMP AMI in N.Virginia
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]  # LAMP AMI in the template execution region
       Tags:
         - Key: Name
           Value: My SSRF EC2 Instance
@@ -83,6 +83,40 @@ Metadata:
     ParameterLabels:
       IpAddress:
         default: "IP Address"
+Mappings:
+ RegionMap:  # All regions aside Hong Kong and Bahrain as they're disabled by default
+   us-east-1:  # N. Virginia
+     AMI: ami-00f12d3946726387c
+   us-east-2:  # Ohio
+     AMI: ami-09eda8943319241d7
+   us-west-1:  # N. California
+     AMI: ami-01845945efeed8235
+   us-west-2:  # Oregon
+     AMI: ami-04b73a9d3421ab405
+   ca-central-1:  # Canada Central
+     AMI: ami-0cf94cacf38d9cf0d
+   eu-west-1:  # Ireland
+     AMI: ami-0391a0496f7db5c1b
+   eu-west-2:  # London
+     AMI: ami-0776597e89aad16d2
+   eu-west-3:  # Paris
+     AMI: ami-0f76c3d5a2e14bbb7
+   eu-central-1:  # Frankfurt
+     AMI: ami-0b4f7b3d27dad4e36
+   eu-north-1:  # Stockholm
+     AMI: ami-0405b3fb3a785dd01
+   ap-northeast-1:  # Tokyo
+     AMI: ami-0186b82b7d205ce58
+   ap-northeast-2:  # Seoul
+     AMI: ami-0f283f0a20fc1f119
+   ap-south-1:  # Mumbai
+     AMI: ami-07260f2a6de51bec7
+   ap-southeast-1:  # Singapore
+     AMI: ami-0513adeea888918cd
+   ap-southeast-2:  # Sydney
+     AMI: ami-081b1c529094efe6f
+   sa-east-1:  # Sao Paulo
+     AMI: ami-02fe2d54b54386279
 Outputs:
   BucketName:
     Value: !Ref 'SSRFS3Bucket'
