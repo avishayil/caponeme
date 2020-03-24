@@ -119,7 +119,7 @@ This CloudFormation template is **NOT** intended for deployment in a production 
   * [Giraffe](https://github.com/osirislab/Giraffe) - Vulnerable web application
   * [Bitnami LAMP Stack](https://bitnami.com/stack/lamp) - AMI using to quickly provision the EC2 Instance
 
-- Thanks to @Bouix for the multi-region support contribution.
+- Thanks to [@Bouix](https://github.com/Kharkovlanok) for the multi-region support contribution.
 
 License
 ----
