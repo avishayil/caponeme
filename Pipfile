@@ -1,0 +1,13 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+cfn-lint = "==0.29.0"
+yamllint = "==1.21.0"
+
+[packages]
+
+[requires]
+python_version = "3.7"
