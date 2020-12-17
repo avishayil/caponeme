@@ -4,9 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-cfn-lint = "==0.29.0"
-yamllint = "==1.21.0"
-pytest == "==6.2.1"
+cfn-lint = "*"
+yamllint = "*"
+pytest = "*"
 "e1839a8" = {editable = true, extras = ["dev"], path = "."}
 
 [packages]
