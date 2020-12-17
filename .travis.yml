@@ -10,11 +10,12 @@ env:
 install:
   - pip install pipenv
   - pipenv install --dev
+  - npm install aws-cdk@latest -g
 script:
-  - pipenv run yamllint .
-  - pipenv run ./scripts/build.sh
-  - pipenv run cfn-lint releases/*.yaml --info
-  - pipenv run pytest .
+  - yamllint .
+  - ./scripts/build.sh
+  - cfn-lint releases/*.yaml --info
+  - pytest .
 deploy:
   provider: releases
   api_key:
