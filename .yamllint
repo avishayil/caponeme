@@ -2,7 +2,14 @@
 
 extends: default
 
+ignore: |
+  releases/
+  *.template.yaml
+
 rules:
   line-length:
-    max: 150
+    level: warning
+  document-start:
+    level: warning
+  empty-lines:
     level: warning

@@ -3,9 +3,32 @@
 language: python
 python:
   - '3.7'
+env:
+  global:
+    - secure: KISInIlF50yZq6qtfuxdMM9Y0b+XCvlTYvOaQEfxFzB42XBMvvis2rkPrJ142JgtrwrewSxKO6BcnBuY6p2do71M7FOXCncyi1czbE/MkblQAFEimGLbo58Jdqw6mesWh3jHcrCW3eEQZOY1YumQiFuxAN4cmgaoysTCNOVDbJ/okjFi5t29ZlWJwG9JS1MkJmZ1D50XFo5Rcqax0A5aX/F30ROh6Ky9jZA+qkV+CwtjciLtlwl5SnRPbiWZBfs+vjJmEqBv/Rzob/n8+vkWEc+q5PVnNf/U5mQhquiwEci0G03ic2d7nu/FrZjOkg96dIdr9tGV0RQSrZcW/BxZBiHpF1mLenF7J4hKccImKenNTq57XwHHFZAqjFDv7rvXj+h4I8WeU8BLSpmY7s6CFGZMKBi8kn7aK+kIUmd6cYeyF0txEYYKLjX4JaqtVbcZ5PU+VyN8BeBu1SP2/+pHLySLbF+1dguoGetBa3uFV9rvupyqMGFb9NeyOhyLIJrMOx9ofYlkrIafGIm5U2cq9daI8Vl4Wcb1TJ2sBermHqt008cXRNb1SDST0HHfdqIVob8YdcTjQm91mkgpVGKqG9TR1KbSnxFwRrdb1kfoCm8IlKT8VRZF965o9qwOS2XSQnCeCr6PNP1RKvsLRRtf06sMc1LcqFmPJv97MeOdL4g=
+    - secure: oLWA/9wXsTJdgIVI7i7v8OEwBafoapM9yqmHgCsjR/9p9Lw+DN0K/Aqn09VAe6/L6qJyEeWW4feGQLV9a4FMR06JwC+DU++xFQz91vwZ/37W+CloW8z42/BE0LdOAjERSxjhaycogY6AgrcKCi8CI2a6R1nDcqn28ZDOmpnJyxyi4ttSjZmRB2UUFOjfKZ69JJGBJt8wYJX27qOtT5yZ8mQtz8WDi8DoQX/DzwUOmeKIZW/Se+qf+cZ7Wa+RSEJ8PVTOtz4l6GHL33CIuQXFomyO1ABBlNwCRjf5i3Tr6LgrcnCbE8E12WowBfV3F7r5f4k88EAD4OihOnKMfRENvnI1TBQDTKR+o+YJaTwJp0dYsgcRjbJL3wuYO1u+VMklzvr8GF9yH4N3pjyOWIIvb+lzghtwLPBweePnoDjIP8BZsgUAvbd1tIgaAJbbShWXyMZp/PuNhdUfMPs1KlHSQ/ZIZoHu78PSXu58/K31xVggb0+GpsY7wurOmtVF9KjsKo4yyLkYGYYUh5eUoVwUoJugOEadKO6ut3cGaXqk9UQp+gfZFcAS0THfcTvUuhwSXZfscqwzHjPabgx9kYG4z19PKHsVIjWl3QMsnUp/oseMi0ATl4qeURAlfge3oJCCqCPrW7jUTWgZpPXvSRZfkA+fW9GAzwqybu2ETSkkuhA=
 install:
   - pip install pipenv
   - pipenv install --dev
+  - nvm install 12.18.0 && nvm use 12.18.0
+  - npm install aws-cdk@latest -g
 script:
   - yamllint .
-  - cfn-lint --template caponesim.yaml --info
+  - ./scripts/build.sh
+  - cfn-lint releases/*.yaml --info
+  - ./scripts/test.sh
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "travis-deployer"
+  - git config --local user.email "deployer@travis-ci.org"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+deploy:
+  provider: releases
+  api_key:
+    secure: "Y0sHImn1YEMVJBhBn3NTtTW224H7bo7N0J/zQUvRW5VzyUa+WUjny/cvIxXiCjTkE/amV/GdZntnSOVS7qqnkA/bSHh4Dxv1ueyujOiGNxVeAvGm/yPIDbNbSKGjabsYv06vts9IvrO8b9nat4JlZZqdDCv4Sy5i2LjeiIlpvCoIo31yekylZPPbuBjSErK+gvzb7BywShOJdSYQknpysCh0BnYxtFciEJV729eJLgb3XFWRmhE+DExAlHLsWrKDxnxYXz+wj/VA1dSC5cH0+afVaYuBiaUY953iMJGJGvdUNETXO0K0/YS15n32xyhdYZH2PU1equMpJcfnZVQqwJ9w5NMEl2ISq+vFZLunHAc31lKK5dZEXMQBG4JvFVTStF59flcREHZ3cGQhQUuhdbHBk4gItzufd1swdVR7cSUv6ocegcmmeRo5kX5yzQ4Dk7GcQg9OgLibo3vjQSzTQ5AvPo5HJJK3Pao98yH1MOy7aK/i8Mi7tiI01TIbE8v/pAACSVpGvvrWfLE8BiViACq4F+ajeztU5DSJ1FI2xn/C75gvt5YKaylR7yoBi8QFbomV1ovAqwfXlmh4cbz9Awli5EiaJtyEKELlMTXf5SIhE8nxcZwTT7mbnRyReTiZDDbjFsqeX7PJBcC+eC3ftbgzXQxW+4B8+kYFsc4OD7U="
+  file_glob: true
+  file: releases/*
+  skip_cleanup: true
+  on:
+    branch: master
