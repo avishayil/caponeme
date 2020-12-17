@@ -1,5 +1,5 @@
 ---
-  
+
 templates:
   - releases/**/*.yaml
 ignore_checks:
