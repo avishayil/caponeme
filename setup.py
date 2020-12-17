@@ -28,12 +28,6 @@ setuptools.setup(
         "aws-cdk.aws_ec2==1.78.0",
     ],
 
-    test_requirements = [
-        'pytest',
-        'pytest-pep8',
-        'pytest-cov',
-    ],
-
     python_requires=">=3.6",
 
     classifiers=[
