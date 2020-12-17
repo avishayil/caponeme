@@ -15,15 +15,14 @@ This CloudFormation template is **NOT** intended for deployment in a production 
 ## Getting Started
 
 - Make sure you have the latest version of `awscli` installed on your terminal.
-- This template can run on any region, assuming that the LAMP AMI's are correct.
-- To get access to the Bitnami LAMP Stack AMI, visit https://aws.amazon.com/marketplace/pp/B072JNJZ5C/, click on "Continue to Subscribe" and then click on "Accept Terms".
+- This template can run on any region, assuming that the LAMP AMI's are correct from the CDK lookup.
 
 ### Deployment
 
-- Download the `capmeonesim.yaml` file.
+- Download the latest release `yaml` template file.
 - Log in to the AWS console
 - Go to CloudFormation service
-- Create new stack and upload the `capmeonesim.yaml` file you downloaded.
+- Create new stack and upload the `yaml` file you downloaded.
 - Allow the template to create IAM resources on your behalf and create the stack.
 - Take note of the S3 Bucket name from the CloudFormation Template Outputs, navigate to this bucket and upload some text files inside
 - Click on the `SSRFWebURL` URL from the CloudFormation Template Outputs, it will redirect you to the vulnerable web application.

@@ -1,0 +1,6 @@
+---
+
+templates:
+  - releases/**/*.yaml
+ignore_checks:
+  - W3010
