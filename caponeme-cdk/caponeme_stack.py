@@ -37,6 +37,8 @@ class CaponemeStack(core.Stack):
 
         ssrf_s3_role = iam.Role(self, "SSRFS3Role", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
 
+        ssrf_s3_role.add_managed_policy(policy=ssrf_s3_policy)
+
         vpc = ec2.Vpc(self, "VPC",
             nat_gateways=0,
             subnet_configuration=[ec2.SubnetConfiguration(name="public",subnet_type=ec2.SubnetType.PUBLIC)]
