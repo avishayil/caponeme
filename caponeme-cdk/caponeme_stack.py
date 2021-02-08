@@ -20,6 +20,8 @@ class CaponemeStack(core.Stack):
 
         ssrf_s3_bucket = s3.Bucket(self, "SSRFS3Bucket")
 
+        ssrf_s3_role = iam.Role(self, "SSRFS3Role", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
+
         ssrf_s3_policy = iam.Policy(self, "SSRFS3Policy",
             document=iam.PolicyDocument(
                 statements=[
@@ -32,12 +34,9 @@ class CaponemeStack(core.Stack):
                         resources=[ssrf_s3_bucket.bucket_arn + "/*"]
                     )
                 ]
-            )
+            ),
+            roles=[ssrf_s3_role]
         )
-
-        ssrf_s3_role = iam.Role(self, "SSRFS3Role", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
-
-        ssrf_s3_role.add_managed_policy(policy=ssrf_s3_policy)
 
         vpc = ec2.Vpc(self, "VPC",
             nat_gateways=0,
