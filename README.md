@@ -2,7 +2,9 @@
 
 ***caponeme*** is a vulnerable cloud environment that meant to mock Capital One Breach for educational purposes
 
-[![Build Status](https://travis-ci.com/avishayil/caponeme.svg?branch=master)](https://travis-ci.com/avishayil/caponeme)
+[![CI](https://github.com/avishayil/caponeme/actions/workflows/ci.yml/badge.svg)](https://github.com/avishayil/caponeme/actions/workflows/ci.yml)
+
+> Built with the [AWS CDK v2](https://docs.aws.amazon.com/cdk/v2/guide/home.html) (Python). This project intentionally provisions an insecure, SSRF-exploitable environment for hands-on learning; the misconfigurations are the point. See the Disclaimer below.
 
 ## Disclaimer
 
@@ -15,14 +17,46 @@ This CloudFormation template is **NOT** intended for deployment in a production 
 ## Getting Started
 
 - Make sure you have the latest version of `awscli` installed on your terminal.
+- Install [Node.js](https://nodejs.org/) 20+ and the AWS CDK v2 CLI: `npm i -g aws-cdk`.
+- Install Python 3.9+ (3.12 recommended).
 - This template can run on any region, assuming that the LAMP AMI's are correct from the CDK lookup.
+
+### Local setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate.bat
+pip install -e .
+pip install pytest
+```
+
+Run the tests (they lock in the intentionally-vulnerable resources):
+
+```bash
+pytest tests/
+```
 
 ### Deployment
 
-- Download the latest release `yaml` template file.
-- Log in to the AWS console
-- Go to CloudFormation service
-- Create new stack and upload the `yaml` file you downloaded.
+You deploy the stack directly with the CDK v2 CLI (no pre-built release
+artifacts are published anymore).
+
+```bash
+export CDK_DEFAULT_ACCOUNT=<your-account-id>
+export CDK_DEFAULT_REGION=<your-region>
+
+# One-time per account/region:
+cdk bootstrap
+
+cdk deploy \
+  --parameters SSRFSGAllowedIP=<your-public-ip> \
+  --parameters SSRFInstanceKP=<your-ec2-key-pair-name>
+```
+
+Prefer CloudFormation directly? Generate the template with
+`cdk synth --context SSRFSGAllowedIP=<ip> --context SSRFInstanceKP=<key>` and
+upload the resulting file from `cdk.out/` in the AWS Console.
+
 - Allow the template to create IAM resources on your behalf and create the stack.
 - Take note of the S3 Bucket name from the CloudFormation Template Outputs, navigate to this bucket and upload some text files inside
 - Click on the `SSRFWebURL` URL from the CloudFormation Template Outputs, it will redirect you to the vulnerable web application.
@@ -36,7 +70,7 @@ This CloudFormation template is **NOT** intended for deployment in a production 
 - Using the IAM role name you got on the previous step, discover the AWS credentials http://169.254.169.254/latest/meta-data/iam/security-credentials/[IAMRoleName]
 - You'll get something like:
   ````
-  { "Code" : "Success", "LastUpdated" : "2019-12-22T21:42:57Z", "Type" : "AWS-HMAC", "AccessKeyId" : "ASIASANNLTVCBCFP445O", "SecretAccessKey" : "v0osgTGnL0n09dHQA6xztS/ZuSS3p8yu+JZ1cAxG", "Token" : "IQoJb3JpZ2luX2VjELb//////////wEaCXVzLWVhc3QtMSJHMEUCIDneXlD6+JLk68XRrQ4X+LrBewvq/9kIYRYhonnW5T9qAiEAmpuGWXeh4rqQ14gmiMU8NvKlxODFh23u5qubMpvC9Rkq0QIIHxABGgwxMzgzMzkzOTI4MzYiDCO/mt42DCCYPTmeJSquAstMGvng3WUgZXlgpm5NiJ+RbYQvnmA1BmIt94LcJeoNpC87MZhxpubTd69zWEqtriLRBXp7KoNQNX5K8ag5eY27R0giQssmidCFED9N/uOgD1Tu33vaVEJoFhzKrd1lhFule3EOHFhImRRGsyfalfY7TWN0GaRNGZlanWdBswpkescM3O43G9J27xeMO22ziu4ajonkCaG51r39/LKj5C1g2VfdXPp5sI0q5+qiG0YSXveN6mGqnN5NXAKNGd4ehYdo4Ot01niy0oS9xtDMLSTVu3XjaxGJwqF5fb4l8Q9zGFe3zA94UShK1uGRBWOfTMHZRwaGYRSTcwximDjEWO4UPKYa50Es5d/12hJdwuFIXPC82i9LyBHXw/ayYn1xyH3bpBwBoYHiereBSuMmMNPG/+8FOs4CX49Hw3xx4pz2/ibkiJ1hjh2/Qu4KZtfTk4SN49q/EAgmP6dx6l/17pRi+T+B7bGk+cES0Ei2806uoTArK8STiO/W3PejELPeoWgy2av+oiL/zt4xXI+hNFdO1xXZXrBGaLbKTZRby+MyrvmDw8GJpxmE1Pyt42pRjxdeQ0NLEcM05JHtxq0/73tEUepsm0Z+6RUqXi9+/BSaP1tRzViApch36d8oJgWARZY5A1eX1d82hCeCiGgNuZxPWC53H3lNXjSRC3dGrx3dI8IJwXgQgEj8e3QP4eeoN3+3H2XFlXE+DopMy6P4ejk8c6Xdk41FbJZrTe1ZoulF2OxLfQbmCOcl85xqJyDEWuZleddagb3jr/Kp7X3Io4bgA+cc0kuQEdLEkfWsKoE8G/uCkSy+tFwn0eqAUmoLVqCxmXS++ZOK3+VX1axY1EMzp68S1g==", "Expiration" : "2019-12-23T04:17:43Z" }
+  { "Code" : "Success", "LastUpdated" : "2019-12-22T21:42:57Z", "Type" : "AWS-HMAC", "AccessKeyId" : "<REDACTED-ACCESS-KEY-ID>", "SecretAccessKey" : "<REDACTED-SECRET-ACCESS-KEY>", "Token" : "<REDACTED-SESSION-TOKEN>", "Expiration" : "2019-12-23T04:17:43Z" }
   ````
 
 - If using Linux, type the following on your terminal to impersonate the IAM role

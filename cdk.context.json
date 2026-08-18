@@ -1,1 +1,11 @@
-{}
+{
+  "availability-zones:account=123456789012:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "ami:account=123456789012:filters.image-type.0=machine:filters.name.0=bitnami-lampstack*:filters.state.0=available:region=us-east-1": "ami-0abcdef1234567890"
+}

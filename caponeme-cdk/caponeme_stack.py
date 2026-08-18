@@ -1,22 +1,21 @@
 from aws_cdk import (
+    Stack,
+    CfnParameter,
+    CfnOutput,
     aws_iam as iam,
-    aws_sqs as sqs,
-    aws_sns as sns,
-    aws_sns_subscriptions as subs,
     aws_s3 as s3,
     aws_ec2 as ec2,
-    core
 )
+from constructs import Construct
 
 
-class CaponemeStack(core.Stack):
+class CaponemeStack(Stack):
 
-    def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-
-        ip_parameter = core.CfnParameter(self, "SSRFSGAllowedIP", type="String")
-        instance_kp_parameter = core.CfnParameter(self, "SSRFInstanceKP", type="AWS::EC2::KeyPair::KeyName")
+        ip_parameter = CfnParameter(self, "SSRFSGAllowedIP", type="String")
+        instance_kp_parameter = CfnParameter(self, "SSRFInstanceKP", type="AWS::EC2::KeyPair::KeyName")
 
         ssrf_s3_bucket = s3.Bucket(self, "SSRFS3Bucket")
 
@@ -40,7 +39,7 @@ class CaponemeStack(core.Stack):
 
         vpc = ec2.Vpc(self, "VPC",
             nat_gateways=0,
-            subnet_configuration=[ec2.SubnetConfiguration(name="public",subnet_type=ec2.SubnetType.PUBLIC)]
+            subnet_configuration=[ec2.SubnetConfiguration(name="public", subnet_type=ec2.SubnetType.PUBLIC)]
             )
 
         ec2_machine_image = ec2.MachineImage.lookup(
@@ -51,7 +50,7 @@ class CaponemeStack(core.Stack):
             vpc=vpc
         )
 
-        ssrf_sg.add_ingress_rule(peer=ec2.Peer.ipv4(ip_parameter.value_as_string + "/32"), connection=ec2.Port.tcp(port=80))
+        ssrf_sg.add_ingress_rule(peer=ec2.Peer.ipv4(ip_parameter.value_as_string + "/32"), connection=ec2.Port.tcp(80))
 
         with open("./caponeme-cdk/user_data.sh") as f:
             ec2_user_data = f.read()
@@ -65,5 +64,5 @@ class CaponemeStack(core.Stack):
             role=ssrf_s3_role,
             key_name=instance_kp_parameter.value_as_string)
 
-        output_bucket_name = core.CfnOutput(self, "SSRFS3BucketOutput", value=ssrf_s3_bucket.bucket_name)
-        output_ssrf_web_url = core.CfnOutput(self, "SSRFWebURL", value="http://" + ssrf_instance.instance_public_dns_name)
+        output_bucket_name = CfnOutput(self, "SSRFS3BucketOutput", value=ssrf_s3_bucket.bucket_name)
+        output_ssrf_web_url = CfnOutput(self, "SSRFWebURL", value="http://" + ssrf_instance.instance_public_dns_name)
