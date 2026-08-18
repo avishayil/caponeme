@@ -1,0 +1,49 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# The demo synthesizes with no real AWS credentials: context lookups
+# (availability zones + the Bitnami LAMP AMI) are served from the committed
+# cdk.context.json using the placeholder account 123456789012.
+env:
+  CDK_DEFAULT_ACCOUNT: "123456789012"
+  CDK_DEFAULT_REGION: us-east-1
+  AWS_REGION: us-east-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install AWS CDK CLI
+        run: npm i -g aws-cdk
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: CDK synth
+        run: cdk synth --context SSRFSGAllowedIP=1.2.3.4 --context SSRFInstanceKP=demo-key
